@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 
-namespace DataBinding_6
+namespace DataBinding_6.Models
 {
     public class DAL
     {
@@ -85,7 +85,15 @@ namespace DataBinding_6
         {
             Person Person_Object = new Person();
 
-            Person_Object.ID = _publicListe[_publicListe.Count - 1].ID + 1;
+            if (_publicListe.Count > 0)
+            {
+                Person_Object.ID = _publicListe[_publicListe.Count - 1].ID + 1;
+            }
+            else
+            {
+                Person_Object.ID = 0;
+            }
+            
             Person_Object.Fornavn = Fornavn;
             Person_Object.Efternavn = Efternavn;
             Person_Object.Formue = Formue;

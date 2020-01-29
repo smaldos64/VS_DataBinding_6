@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         xmlns:local="clr-namespace:DataBinding_6"
+        xmlns:localConverters="clr-namespace:DataBinding_6.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
@@ -11,6 +13,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="DataTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <localConverters:PersonConverter x:Key="ConvertPerson"/>
+            <!--<local:DebugDummyConverter x:Key="DebugDummyConverter" />-->
         </ResourceDictionary>
     </Window.Resources>
 
@@ -31,7 +35,6 @@
             <RowDefinition Height="32" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Text="Nuværende Person : " 
@@ -39,7 +42,7 @@
         <ContentControl Name="contentControl1" ContentTemplate="{StaticResource PersonClass}" Content="{Binding}" Grid.ColumnSpan="2" 
               Grid.RowSpan="4" Grid.Column="0" Height="100" VerticalAlignment="Stretch" Grid.Row="0"/>
 
-        <ContentControl Name="contentControl2" ContentTemplate="{StaticResource PersonClass}" Content="{Binding Mode=OneWay}" Grid.ColumnSpan="2" 
+        <ContentControl x:Name="contentControl2" ContentTemplate="{StaticResource PersonClass}" Grid.ColumnSpan="2" 
               Grid.RowSpan="4" Grid.Column="2" Height="100" VerticalAlignment="Stretch" Grid.Row="0"/>
 
         <!--<Button Content="Vis data" Height="23" HorizontalAlignment="Stretch" Margin="10,2" Name="btnVisData"
@@ -54,9 +57,36 @@
         <Button Content="Indsæt data" Height="23" HorizontalAlignment="Stretch" Margin="10,2" Name="btnInsertData"
              VerticalAlignment="Stretch" Grid.Row="5" Grid.Column="4" Click="btnInsertData_Click" />
 
+        <!--<ComboBox Height="20" Name="cmbPersons" Width="70" Grid.Row="6" Grid.Column="1" SelectionChanged="cmbPersons_SelectionChanged" ItemsSource="{Binding}" />-->
+        <ComboBox Height="20" Name="cmbPersons" Width="120" Grid.Row="6" Grid.Column="1" SelectionChanged="cmbPersons_SelectionChanged" SelectedItem="{Binding ElementName=cmbPersons, Path=SelectedValue, diag:PresentationTraceSources.TraceLevel=High}" >
+        <!--<ComboBox Height="20" Name="cmbPersons" Width="120" Grid.Row="6" Grid.Column="1" SelectionChanged="cmbPersons_SelectionChanged">-->
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource ConvertPerson}}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        
         <ListView ItemTemplate="{StaticResource PersonClass}" ItemsSource="{Binding}" Grid.Row="7" HorizontalAlignment="Stretch" Margin="10"          
-        Name="listView1" VerticalAlignment="Stretch" Grid.ColumnSpan="1" />
+        Name="listView1" VerticalAlignment="Stretch" Grid.ColumnSpan="1" SelectionChanged="listView1_SelectionChanged" 
+        SelectedItem="{Binding ElementName=cmbPersons, Path=SelectedValue, diag:PresentationTraceSources.TraceLevel=High}">
+            <ListView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" 
+                   Color="#FF0000"/>
+            </ListView.Resources>
+            <!--<Style TargetType="ListBoxItem">
+                <Style.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Green"/>
+                </Style.Resources>
+            </Style>-->
+        </ListView>
 
-        <ComboBox Height="20" Name="cmbPersons" Width="70" Grid.Row="6" Grid.Column="1" ItemsSource="{Binding}" SelectionChanged="cmbPersons_SelectionChanged" />
+        <DataGrid Name="dataGrid1" AutoGenerateColumns="True" ItemsSource="{Binding}" Grid.Row="7" HorizontalAlignment="Left" Margin="10" 
+         VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2" SelectionChanged="dataGrid1_SelectionChanged" SelectedItem="{Binding ElementName=cmbPersons, Path=SelectedValue, diag:PresentationTraceSources.TraceLevel=High}" >
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" 
+                   Color="#FF0000"/>
+            </DataGrid.Resources>
+        </DataGrid>
     </Grid>
 </Window>

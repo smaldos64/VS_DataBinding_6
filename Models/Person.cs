@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataBinding_6
+namespace DataBinding_6.Models
 {
     public class Person : INotifyPropertyChanged
     {
